@@ -1,67 +1,38 @@
-corPreferida = {"Azul": 0, "Verde": 0, "Rosa": 0}
-idade = 0
-sexo = {"Masculino": 0, "Feminino": 0}
-
-totalDeRespondentes = 0
-
-idadePessoaMaisVelhaQuePrefereACor = {"Azul": 0, "Verde": 0, "Rosa": 0}
-
-idadePessoaMaisNovaQuePrefereACor = {"Azul": 0, "Verde": 0, "Rosa": 0}
-
-quantidadeDePessoasDoSexoMasculinoQuePrefereACor = {"Azul": 0, "Verde": 0, "Rosa": 0}
-
-quantidadeDePessoasDoSexoFemininoQuePrefereACor = {"Azul": 0, "Verde": 0, "Rosa": 0}
-
-quantidadeDePessoas = 0
+respostas = {"Ótimo": 0, "Bom": 0, "Regular": 0, "Péssimo": 0}
+idades = []
+idadesRespostas = []
+respondentes = []
 
 while True:
-    opcao = input("Deseja responder este formulário? (S/N): ").upper() 
-    
-    if opcao != "S":
+    idade = int(input("Idade do respondente (ou digite -1 para encerrar): "))
+    if idade == -1:
         break
+    resposta = input("Avaliação do atendimento (Ótimo, Bom, Regular, Péssimo): ").strip().capitalize()
 
-    quantidadeDePessoas += 1
-    print(f"Respostas para a pessa {quantidadeDePessoas}:")
-    cor = input("Qual é a sua cor preferida (Azul, Verde, ou Rosa)? ").capitalize()
-    if cor in corPreferida:
-        corPreferida[cor] += 1
-        idade = int(input("Qual é a sua idade? "))
-        
-        if idade > idadePessoaMaisVelhaQuePrefereACor[cor]:
-            idadePessoaMaisVelhaQuePrefereACor[cor] = idade
-        
-        if idade < idadePessoaMaisNovaQuePrefereACor[cor]:
-            idadePessoaMaisNovaQuePrefereACor[cor] = idade
-        genero = input ("Qual é o seu sex (Masculino/Feminino)").capitalize()
-        if genero in sexo: 
-            sexo[genero] += 1
-        
-        if genero == "Maculino":
-            quantidadeDePessoasDoSexoMasculinoQuePrefereACor [cor] += 1
-        else: 
-            quantidadeDePessoasDoSexoFemininoQuePrefereACor [cor] += 1
+    if resposta in respostas:
+        respostas[resposta] += 1
+    idades.append(idade)
+    idadesRespostas.append((idade, resposta))
+    respondentes.append((len(respondentes) + 1, idade, resposta))
 
-totalDeRespondentes = sum(corPreferida.values())
-porcentagens = {cor: (quantidade / quantidadeDePessoas * 100) for cor, quantidade in corPreferida.items()}
+if len(respondentes) > 0:
+   
+    idadesRespostas.sort() 
+    respondenteMaisNovo = idadesRespostas[0]
+    respondenteMaisVelho = idadesRespostas[-1]
 
-print("Porcentagem de Preferecia de cor:")
-for cor, porcentagem in porcentagens.items():
-    print (f"{cor}: {porcentagem:.2f}%")
 
-print("Idade da pessoa mais velha que prefere cada cor:")
-for cor, idade in idadePessoaMaisVelhaQuePrefereACor.items():
-      print(f"{cor}: {idade} anos")
-      
-print("Idade da pessoa mais nova que prefere cada cor:")
-for cor, idade in idadePessoaMaisNovaQuePrefereACor.items():
-     print(f"{cor}: {idade} anos")
+    mediaIdade = sum(idades) / len(respondentes)
 
-print("Quantidade de pessoas do sexo masculin que prefere cada cor:")
-for cor, quantidade in quantidadeDePessoasDoSexoMasculinoQuePrefereACor.items():
-    print(f"{cor}: {quantidade}")
+    print(f"Total de respondentes: {len(respondentes)}")
+    for resposta, quantidade in respostas.items():
+        print(f"{resposta}: {quantidade} ({(quantidade / len(respondentes) * 100):.2f}%)")
+    print(f"Média de idade dos respondentes: {mediaIdade:.2f} anos")
+    print(f"O respondente mais velho possuía a idade: {respondenteMaisVelho[0]} anos e sua resposta foi: {respondenteMaisVelho[1]}")
+    print(f"O respondente mais novo possuía a idade: {respondenteMaisNovo[0]} anos e sua resposta foi: {respondenteMaisNovo[1]}")
 
-print("Quantidade de pesoas do sexo masculino que prefere cada cor:")
-for cor, quantidade in quantidadeDePessoasDoSexoFemininoQuePrefereACor.items():
-    print(f"{cor}: {quantidade}")
-
-print(f"Quantidade de pessoas que respondeu a pegunta: {quantidadeDePessoas}")
+    print("\nLista de Respondentes:")
+    for respondente in respondentes:
+        print(f"Respondente {respondente[0]} - Idade: {respondente[1]} anos, Avaliação: {respondente[2]}")
+else:
+    print("Nenhum respondente registrado.")
